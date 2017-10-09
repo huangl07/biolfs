@@ -36,8 +36,6 @@ cd pkg-config-0.29.2
 mkdir $packages/ncurse-build2 && cd $packages/ncurse-build2
 ../ncurses-6.0/configure --prefix=$env --with-shared --enable-pc-files --enable-widec
 make -j8 && make install
-cd $env/lib/
-for lib in ncurses form panel menu ; do ln -sfv lib${lib}w.a lib$lib.a;done
 mkdir $packages/sed-build2 && cd $packages/sed-build2
 ../sed-4.4/configure --prefix=$env && make -j8 && make install
 cd $package
@@ -59,9 +57,6 @@ cd $package
 mkdir grep-build2 && cd grep-build2
 ../grep-3.1/configure --prefix=$prefix && make -j8 && make install
 cd $package
-tar -xvf readline-7.0.tar.gz
-mkdir readline-build && cd readline-build
-../readline-7.0/configure --prefix=$prefix && make SHLIB_LIBS=-lncurses -j8 && make install
 tar -xvf bc-1.07.1.tar.gz
 mkdir bc-build && cd bc-build
 ../bc-1.07.1/configure --prefix=$env --with-readline  && make -j8 && make install 
@@ -69,18 +64,5 @@ cd $package
 tar -xvf libtool-2.4.6.tar.xz
 mkdir libtool-build && cd libtool-build
 ../libtool-2.4.6/configure --prefix=$env && make -j8 && make install
-cd $package
-tar -xvf gdbm-1.13.tar.gz
-mkdir gdbm-build && cd gdbm-build
-../gdbm-1.13/configure --prefix=$env --enable-libgdbm-compat && make -j8 && make install
-cd $package
-tar -xvf expat-2.2.3.tar.bz2
-mkdir expat-build && cd expat-build
-../expat-2.2.3/configure --prefix=$env && make -j8 && make install
-cd $package/perl-5.26.0 && make distclean 
-export BUILD_ZLIB=False
-export BUILD_BZIP2=0
-sh Configure -des -Dprefix=$prefix -Duseshrplib -Dusethreads && make -j8 && make install && unset BUILD_ZLIB BUILD_BZIP2
-
 
 
