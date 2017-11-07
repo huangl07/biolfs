@@ -1,27 +1,11 @@
-cd $HOME
-wget http://mirrors.ustc.edu.cn/lfs/lfs-packages/lfs-packages-8.1-rc2.tar
-tar -xvf lfs-packages-8.1-rc2.tar
-cat > $HOME/.bash_profile << "EOF"
-exec env -i HOME=$HOME TERM=$TERM PS1='\u:\w\$ ' /bin/bash
-EOF
-cat > $HOME/.bashrc << "EOF"
-export prefix=$HOME/prefix
-export env=$HOME/.env/
-export package=$HOME/8.1-rc1
-umask 022
-export PATH=$prefix/bin:/bin:/usr/bin
-export CFLAGS="-fPIC"
-EOF
-source ~/.bash_profile
-source ~/.bash_rc
-mkdir $prefix
-mkdir $env
-cd 8.1-rc1
+mkdir -p $prefix
+mkdir -p $env
+cd $package
 tar -xvf binutils-2.29.tar.bz2
 mkdir binutils-build1
 cd binutils-build1
 ../binutils-2.29/configure --prefix=$prefix && make -j8 && make install
-cd $packages
+cd $package
 tar -xvf gcc-7.2.0.tar.xz
 mkdir gcc-build1
 cd gcc-7.2.0
