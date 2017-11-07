@@ -98,6 +98,64 @@ mkdir xz-build2 && cd xz-build2
 ../configure --prefix=$env
 make -j8
 make install
+cd $package/coreutils-8.27
+mkdir coreutils-build2 && cd coreutils-build2
+../configure --prefix=$env
+make -j8
+make install
+cd $package/diffutils-3.6
+mkdir diffutils-build2 && cd diffutils-build2
+../configure --prefix=$env
+make -j8
+make install
+cd $package/gawk-4.1.4
+mkdir gawk-build2 && cd gawk-build2
+../configure --prefix=$env
+make -j8
+make install
+cd $package/findutils-4.6.0
+mkdir findutils-build2 && cd findutils-build2
+../configure --prefix=$env
+make 
+make install
+cd $package/
+tar -xvf less-487.tgz
+cd less-487
+mkdir build && cd build
+../configure --prefix=$env
+make 
+make install
+cd $package/gzip-1.8.tar.gz
+cd gzip-1.8
+mkdir build && cd build
+../configure --prefix=$env
+make -j8 
+make install
 cd $package
-
+tar -xvf make-4.2.1.tar.gz
+cd make-4.2.1
+mkdir build && cd build
+../configure --prefix=$env
+make -j8 
+make install
+cd $package
+tar -xvf tar-1.29.tar.gz
+cd tar-1.29
+mkdir build && cd build
+../configure --prefix=$env
+make -j8
+make install
+cd $package
+tar -xvf testinfo-6.4.tar.gz
+cd testinfo-6.4
+mkdir build && cd build
+../configure --prefix=$env
+make && make install
+cd $package
+tar -xvf vim-8.0.586.tar.gz
+cd vim8
+mkdir build && cd build
+../configure --prefix=$env
+make 
+make install
 
