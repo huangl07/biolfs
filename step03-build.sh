@@ -1,5 +1,3 @@
-source $HOME/.bashrc
-echo "haha"
 cat > $HOME/.bash_profile << "EOF"                   
 export env=$HOME/.env/
 export packages=$HOME/8.1-rc1/
@@ -8,9 +6,11 @@ export LD_LIBRARY_PATH=$env/lib/:$env/lib64/
 export LIBRARY_PATH=$env/lib/:$env/lib64/
 export C_INCLUDE_PATH=$env/include/
 export CPLUS_INCLUDE_PATH=$env/include/
+export PKG_CONFIG_PATH=$env/lib/pkgconfig:$env/lib64/pkgconfig
 EOF
 source $HOME/.bash_profile
 source $HOME/.bashrc
+mkdir -p $env
 cd $packages
 tar -xvf man-pages-4.12.tar.xz
 cd man-pages-4.12
@@ -57,11 +57,11 @@ mkdir bison-build && cd bison-build
 ../bison-3.0.4/configure --prefix=$env && make -j8 && make install
 cd $package
 mkdir grep-build2 && cd grep-build2
-../grep-3.1/configure --prefix=$prefix && make -j8 && make install
+../grep-3.1/configure --prefix=$env && make -j8 && make install
 cd $package
 tar -xvf readline-7.0.tar.gz
 mkdir readline-build && cd readline-build
-../readline-7.0/configure --prefix=$prefix && make SHLIB_LIBS=-lncurses -j8 && make install
+../readline-7.0/configure --prefix=$env && make SHLIB_LIBS=-lncurses -j8 && make install
 tar -xvf bc-1.07.1.tar.gz
 mkdir bc-build && cd bc-build
 ../bc-1.07.1/configure --prefix=$env --with-readline  && make -j8 && make install 
@@ -80,7 +80,24 @@ mkdir expat-build && cd expat-build
 cd $package/perl-5.26.0 && make distclean 
 export BUILD_ZLIB=False
 export BUILD_BZIP2=0
-sh Configure -des -Dprefix=$prefix -Duseshrplib -Dusethreads && make -j8 && make install && unset BUILD_ZLIB BUILD_BZIP2
-
+sh Configure -des -Dprefix=$env -Duseshrplib -Dusethreads && make -j8 && make install && unset BUILD_ZLIB BUILD_BZIP2
+cd $package/
+tar -xvf autoconf-2.6.9.tar.xz
+mkdir autoconf-build && cd autoconf-build
+./configure --prefix=$env
+make -j8
+make install
+cd $package
+tar -xvf automake-1.15.1.tar.xz
+mkdir automake-build && cd automake
+./configure --prefix=$env
+make -j8
+make install
+cd $package/xz-5.2.3
+mkdir xz-build2 && cd xz-build2
+../configure --prefix=$env
+make -j8
+make install
+cd $package
 
 
