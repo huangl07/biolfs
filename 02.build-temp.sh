@@ -15,7 +15,8 @@
 #tar.xz: tar -Jxvf
 
 SBU=30           # 30 seconds = 1 sbu when using -j 6 on my system
-
+export MAKEFLAGS="-j 8"
+runtests=0
 
 
     
