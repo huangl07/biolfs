@@ -18,7 +18,7 @@ export PATH
 EOF
 mkdir -p $HOME/tools
 mkdir -p $HOME/package
-chdir $HOME/package/
+cd $HOME/package/
 tar -xvf $HOME/lfs-packages-8.1-rc2.tar
 
 source ~/.bash_profile
