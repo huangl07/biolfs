@@ -1,0 +1,6 @@
+#!/bin/bash
+tgtdisk=/dev/sdb
+cputhreads=6
+runtests=0
+
+export MAKEFLAGS="-j $cputhreads"

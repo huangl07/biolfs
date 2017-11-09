@@ -1,2 +1,1 @@
-# biolfs
-biolfs builder for centos 
+build a almost LFS without root system 
