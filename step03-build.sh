@@ -146,8 +146,8 @@ mkdir build && cd build
 make -j8
 make install
 cd $package
-tar -xvf testinfo-6.4.tar.gz
-cd testinfo-6.4
+tar -xvf texinfo-6.4.tar.gz
+cd texinfo-6.4
 mkdir build && cd build
 ../configure --prefix=$env
 make && make install
