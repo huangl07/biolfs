@@ -15,8 +15,7 @@
 #tar.xz: tar -Jxvf
 
 SBU=30           # 30 seconds = 1 sbu when using -j 6 on my system
-export MAKEFLAGS="-j 8"
-runtests=0
+
 
 
     
@@ -27,20 +26,20 @@ f_cyan="\e[38;5;75m"
 f_green="\e[38;5;82m"
 
 
-make-check(){
+function  make-check(){
     if [ $runtests -eq 1 ]; then
         make check
     fi
 }
 
-generic-install(){
+function generic-install(){
     ./configure --prefix=$prefix
     make
     make-check
     make install
 }
 
-countdown(){
+function countdown(){
     local title=$1
     
     local f_off="\e[0m" 
@@ -58,7 +57,7 @@ countdown(){
     sleep 1    
 }
 
-sbu(){    
+function sbu(){    
     local f_off="\e[0m"
     local f_orange="\e[38;5;202m"    
     local duration=$(php -r "echo $SBU * $1;")
@@ -66,7 +65,7 @@ sbu(){
     echo -e "${f_orange}This part will take up around $1 SBU = $duration seconds ($minutes minutes) ${f_off}"
 }
 
-pre-build(){
+function pre-build(){
     local f_off="\e[0m"
     local f_bold="\e[1m"
     local f_cyan="\e[38;5;75m"
@@ -98,7 +97,7 @@ pre-build(){
     
 }
 
-post-build(){
+function post-build(){
     local f_off="\e[0m"
     local f_green="\e[38;5;82m"
     local f_cyan="\e[38;5;75m"
@@ -120,11 +119,11 @@ post-build(){
     countdown "Waiting again.."
 }
 
-clean-tools(){
+function clean-tools(){
     rm -rf $LFS$prefix/*
 }
 
-c-check(){
+function c-check(){
     local currdir=$(pwd)
     echo -e "${f_green}${f_bold}SANITY CHECK!${f_off}\n==========\nShould output something like: [Requesting program interpreter: $prefix/lib/ld-linux.so.2]\n==============="
 
@@ -139,16 +138,16 @@ c-check(){
     countdown "Waiting a bit"
 }
 
-lfs-own(){
+function lfs-own(){
     sudo chown -R lfs:lfs $LFS
 }
 
-root-own(){
+function root-own(){
     sudo chown -R root:root $LFS
 }
 
 
-54-binutils(){
+function 54-binutils(){
     pre-build binutils-2.29 bz2 1
     
     mkdir -v ../binutils-build
@@ -177,7 +176,7 @@ root-own(){
     post-build binutils-2.24
 }
 
-55-gcc(){
+function 55-gcc(){
     pre-build gcc-7.2.0 xz 7.2
     tar -xf ../mpfr-3.1.5.tar.xz
     mv -v mpfr-3.1.5 mpfr
@@ -227,7 +226,7 @@ done
 }
 
 
-build-54-to-57(){
+function build-54-to-57(){
     54-binutils
     sleep 1
     55-gcc
@@ -235,7 +234,7 @@ build-54-to-57(){
 }
 
 
-59-binutils(){
+function 59-binutils(){
     pre-build binutils-2.29 bz2 1.1
     mkdir -v ../binutils-build
     cd ../binutils-build
@@ -260,7 +259,7 @@ build-54-to-57(){
     post-build binutils-2.29
 }
 
-510-gcc(){
+function 510-gcc(){
     pre-build gcc-7.2.0 xz 7.2
     
    cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
@@ -315,7 +314,7 @@ RANLIB=$LFS_TGT-ranlib                               \
     c-check  
 }
 
-build-58-to-510(){
+function build-58-to-510(){
     58-libstdc
     sleep 1
     59-binutils
@@ -324,7 +323,7 @@ build-58-to-510(){
 }
 
 
-511-tcl(){
+function 511-tcl(){
     pre-build tcl-core8.6.7-src gz 1 tcl8.6.7
     
     cd unix
@@ -348,7 +347,7 @@ build-58-to-510(){
     
 }
 
-512-expect(){
+function 512-expect(){
     pre-build expect5.45 gz 0.1
     
     cp -v configure{,.orig}
@@ -366,7 +365,7 @@ build-58-to-510(){
     post-build expect5.45
 }
 
-513-dejagnu(){
+function 513-dejagnu(){
     pre-build dejagnu-1.6 gz 0.1
     ./configure --prefix=$prefix
     make install
@@ -374,7 +373,7 @@ build-58-to-510(){
     post-build dejagnu-1.6
 }
 
-514-check(){
+function 514-check(){
     pre-build check-0.11.0 gz 1
     PKG_CONFIG= ./configure --prefix=$prefix
     make
@@ -383,7 +382,7 @@ build-58-to-510(){
     post-build check-0.11.0
 }
 
-515-ncurses(){
+function 515-ncurses(){
     pre-build ncurses-6.0 gz 0.6
     
     ./configure --prefix=$prefix \
@@ -399,7 +398,7 @@ build-58-to-510(){
     post-build ncurses-6.0
 }
 
-516-bash(){
+function 516-bash(){
     pre-build bash-4.4 gz 0.4
     
     ./configure --prefix=$prefix --without-bash-malloc
@@ -410,20 +409,20 @@ build-58-to-510(){
     
     post-build bash-4.4
 }
-516.5-bison(){
+function 516.5-bison(){
 	pre-build bison-3.0.4 xz bison
 	./configure --prefix=$prefix
 	make 
 	make install
 }
-517-bzip2(){
+function 517-bzip2(){
     pre-build bzip2-1.0.6 gz 1
     make
     make PREFIX=$prefix install
     post-build bzip2-1.0.6
 }
 
-518-coreutils(){
+function 518-coreutils(){
     pre-build coreutils-8.27 xz 1
     ./configure --prefix=$prefix --enable-install-program=hostname
     make
@@ -432,7 +431,7 @@ build-58-to-510(){
     post-build coreutils-8.27
 }
 
-build-511-to-518(){
+function build-511-to-518(){
     511-tcl
     sleep 1
     512-expect
@@ -451,26 +450,26 @@ build-511-to-518(){
 }
 
 
-519-diffutils(){
+function 519-diffutils(){
     pre-build diffutils-3.6 xz 1
     generic-install
     post-build diffutils-3.6
 }
 
 
-521-findutils(){
+function 521-findutils(){
     pre-build findutils-4.6.0 gz 1
     generic-install    
     post-build findutils-4.6.0
 }
 
-522-gawk(){
+function 522-gawk(){
     pre-build gawk-4.1.4 xz 1
     generic-install
     post-build gawk-4.1.4
 }
 
-523-gettext(){
+function 523-gettext(){
     pre-build gettext-0.19.8 xz 1
     cd gettext-tools
     EMACS="no" ./configure --prefix=$prefix --disable-shared
@@ -484,25 +483,25 @@ build-511-to-518(){
     post-build gettext-0.19.8
 }
 
-524-grep(){
+function 524-grep(){
     pre-build grep-3.1 xz 1
     generic-install    
     post-build grep-3.1
 }
 
-525-gzip(){
+function 525-gzip(){
     pre-build gzip-1.8 xz 1
     generic-install
     post-build gzip-1.8
 }
 
-526-m4(){
+function 526-m4(){
     pre-build m4-1.4.18 xz 1
     generic-install
     post-build m4-1.4.18
 }
 
-527-make(){
+function 527-make(){
     pre-build make-4.2.1 bz2 1
     ./configure --prefix=$prefix --without-guile
     make
@@ -511,13 +510,13 @@ build-511-to-518(){
     post-build make-4.2.1
 }
 
-528-patch(){
+function 528-patch(){
     pre-build patch-2.7.5 xz 1
     generic-install
     post-build patch-2.7.5
 }
 
-529-perl(){
+function 529-perl(){
     pre-build perl-5.26.0 bz2 1
     sh Configure -des -Dprefix=$prefix -Dlibs=-lm 
     make
@@ -527,31 +526,31 @@ build-511-to-518(){
     post-build perl-5.26.0
 }
 
-530-sed(){
+function 530-sed(){
     pre-build sed-4.4 bz2 0.1
     generic-install
     post-build sed-4.4
 }
 
-531-tar(){
+function 531-tar(){
     pre-build tar-1.289 xz 1
     generic-install
     post-build tar-1.29
 }
 
-532-texinfo(){
+function 532-texinfo(){
     pre-build texinfo-6.4 xz 1
     generic-install
     post-build texinfo-6.4
 }
 
-534-xz(){
+function 534-xz(){
     pre-build xz-5.2.3 xz 1
     generic-install
     post-build xz-5.2.3
 }
 
-build-519-to-534(){
+function build-519-to-534(){
     519-diffutils
     sleep 1
     521-findutils
