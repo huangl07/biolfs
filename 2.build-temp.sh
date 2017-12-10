@@ -1,19 +1,24 @@
 #!/usr/bin/env bash
 export prefix=$HOME/temp-build/
 export package=$HOME/package/8.1-rc1/
+export CFLAGS="-fPIC"
 function build(){
 	make -j8
 	make install
-	cd $HOME/package/
+	cd $package
 	echo $1," complete!"
 }
 function prebuild(){
 	tar -xvf $1.tar.*
-	cd $1
+	if [ -d $1 ]; then 
+		cd $1
+	fi
+	echo $1 done!
 }
 cd $package
 function binutils(){
 	prebuild binutils-2.29
+	cd binutils-2.29
 	mkdir build && cd build
 	../configure --prefix=$prefix --with-lib-path=$prefix/lib 
 	mkdir -v $prefix/lib && ln -sv lib $prefix/lib64 
@@ -22,6 +27,7 @@ function binutils(){
 
 function gcc(){
 	prebuild gcc-7.2.0
+	cd gcc-7.2.0
 	tar -xf $package/mpfr-3.1.5.tar.xz
 	ln -sv mpfr-3.1.5 mpfr
 	tar -xf $package/gmp-6.1.2.tar.xz
@@ -35,10 +41,11 @@ function gcc(){
 
 function tcl(){
 	prebuild tcl-core8.6.7-src
-	mkdir build && cd build
+	mkdir -p $package/tcl8.6.7/build && cd $package/tcl8.6.7/build
+	echo `pwd`
 	../unix/configure --prefix=$prefix
 	build
-	ln -sv $prefix/tclsh8.6 $prefix/tclsh
+	ln -sv $prefix/bin/tclsh8.6 $prefix/bin/tclsh
 }
 function ncurses(){
 	prebuild ncurses-6.0
@@ -59,7 +66,9 @@ function bison(){
 }
 function bzip2(){
 	prebuild bzip2-1.0.6
+	echo `pwd`
 	make PREFIX=$prefix install
+	cd $package
 }
 function coreutils(){
 	prebuild coreutils-8.27
@@ -109,7 +118,7 @@ function m4(){
 	../configure --prefix=$prefix
 	build
 }
-function make(){
+function bmake(){
 	prebuild make-4.2.1
 	mkdir build && cd build
 	../configure --prefix=$prefix
@@ -117,7 +126,7 @@ function make(){
 }
 function perl(){
 	prebuild perl-5.26.0
-	sh Configure -des -Dprefix=$prefix -Dlibs=-lm
+	sh Configure -des -Dprefix=$prefix 
 	make && make install
 }
 function sed(){
@@ -126,7 +135,7 @@ function sed(){
 	../configure --prefix=$prefix
 	build
 }
-function tar(){
+function btar(){
 	prebuild tar-1.29
 	mkdir build && cd build
 	../configure --prefix=$prefix
@@ -138,7 +147,25 @@ function texinfo(){
 	../configure --prefix=$prefix
 	build
 }
+binutils
 gcc
+tcl
+ncurses
+bison
+bzip2
+coreutils
+diffutils
+findutils
+gawk
+gettext
+grep
+gzip
+m4
+bmake
+perl
+sed
+btar
+texinfo
 
 
 
