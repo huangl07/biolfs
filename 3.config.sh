@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 cat > ~/.bash_profile << "EOF"
-export prefix=$HOME/temp-build/
+export prefix=$HOME/tools/
 export package=$HOME/package/8.1-rc1/
 export env=$HOME/.env/
 export CFLAGS="-fPIC"

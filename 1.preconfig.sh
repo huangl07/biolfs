@@ -20,5 +20,5 @@ mkdir -p $HOME/tools
 mkdir -p $HOME/package
 cd $HOME/package/
 tar -xvf $HOME/lfs-packages-8.2.tar
-
+cd ~/
 source ~/.bash_profile

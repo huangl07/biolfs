@@ -264,7 +264,7 @@ function vim(){
 #bc
 #binutils
 #gcc
-bzip2
+#bzip2
 #ncurses
 #sed
 #bison
@@ -273,7 +273,7 @@ bzip2
 #libtool
 #gdbm
 #expat
-#perl
+perl
 #autoconf
 #automake
 #xz
