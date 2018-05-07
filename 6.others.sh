@@ -832,7 +832,7 @@ function php(){
 	wget http://www.php.net/distributions/php-7.2.2.tar.xz
 	prebuild php-7.2.2
 	mkdir build && cd build
-	./configure --prefix=$prefix \
+	../configure --prefix=$prefix \
 		--enable-fpm                 \
 		--with-fpm-user=apache       \
 		--with-fpm-group=apache      \
@@ -849,5 +849,136 @@ function php(){
 		--enable-mbstring            \
 		--with-readline              
 	build
+}
+function which(){
+	wget https://ftp.gnu.org/gnu/which/which-2.21.tar.gz
+	prebuild which-2.21
+	mkdir build && cd build
+	../configure --prefix=$prefix
+	build
+}
+function unrar(){
+	wget http://www.rarlab.com/rar/unrarsrc-5.5.8.tar.gz
+	prebuild unrarsrc-5.5.8
+	mkdir -f makefile
+	cp unrar $prefix/bin/
+}
+function autoconf(){
+	wget https://ftp.gnu.org/gnu/autoconf/autoconf-2.13.tar.gz
+	prebuild autoconf-2.13
+	mkdir build && cd build
+	../configure --prefix=$prefix
+	build
+}
+function gdb(){
+	wget https://ftp.gnu.org/gnu/gdb/gdb-8.1.tar.xz
+	prebuild gdb-8.1
+	mkdir build && cd build
+	../configure --prefix=$prefix --with-system-readline --without-guild
+	build
+}
+function git(){
+	wget https://www.kernel.org/pub/software/scm/git/git-2.16.2.tar.xz
+	prebuild git-2.16.2
+	mkdir build && cd build
+	../configure --prefix=$prefix
+	build
+}
+function guile(){
+	wget https://ftp.gnu.org/gnu/guile/guile-2.2.3.tar.xz
+	prebuild guile-2.2.3
+	mkdir build && cd build
+	../configure --prefix=$prefix --disable-static
+	build
+}
+function librep(){
+	wget http://download.tuxfamily.org/librep/librep_0.92.7.tar.xz
+	prebuild librep_0.92.7
+	mkdir build && cd build
+	../configure --prefix=$prefix --disable-static
+	build
+}
+function llvm(){
+	wget http://llvm.org/releases/5.0.1/llvm-5.0.1.src.tar.xz
+	prebuild llvm-5.0.1.src
+	mkdir build && cd build
+	CC=gcc CXX=g++ cmake -DCMAKE_ISATLL_PREFIX=$prefix
+	build
+}
+function hg(){
+	wget https://www.mercurial-scm.org/release/mercurial-4.5.tar.gz
+	prebuild mercurial-4.5
+	make PREFIX=$prefix install-bin
+	cd $package
+}
+function nasm(){
+	wget http://www.nasm.us/pub/nasm/releasebuilds/2.13.03/nasm-2.13.03.tar.xz
+	prebuild nasm-2.13.03
+	mkdir build && cd builld
+	../configure --prefix=$prefix
+	build
+}
+function bninja(){
+	wget https://github.com/ninja-build/ninja/archive/v1.8.2/ninja-1.8.2.tar.gz
+	prebuild bninja-1.8.2
+	python3 configure.py --bootstrap --prefix=$prefix
+	cp ninja $bin
+	cd $package
+}
+function ruby(){
+	wget http://cache.ruby-lang.org/pub/ruby/2.5/ruby-2.5.0.tar.xz
+	prebuild ruby-2.5.0
+	mkdir build && cd build
+	../configure --prefix=$prefix --enable-shared
+	build
+}
+function R(){
+	wget https://mirrors.ustc.edu.cn/CRAN/src/base/R-3/R-3.5.0.tar.gz
+	prebuild R-3.5.0
+	mkdir build && cd build
+	../configure --prefix=$prefix
+	build
+}
+function DMD(){
+	wget http://downloads.dlang.org/releases/2.x/2.080.0/dmd.2.080.0.linux.tar.xz
+	prebuild dmd.2.080.0
+	cp dmd2/linux/bin64/* $prefix/bin
+	cp dmd2/linux/lib64/
+}
+function go(){
+	wget https://dl.google.com/go/go1.10.2.linux-amd64.tar.gz
+	prebuild go1.10.2.linux-amd64.tar.gz
+	cp -r $package/go1.10.2.linux-amd64/ $prefix/go
+	echo "export GOROOT=$prerfix/go" >> $HOME/.bash_profile
+	echo "export PATH=$PATH:$GOROOT/bin" >> $HOME/.bash_profile
+}
+function TK(){
+	wget https://downloads.sourceforge.net/tcl/tk8.6.8-src.tar.gz
+	prebuild tk8.6.8-src
+	mkdir build && cd build
+	../unix/configure --prefix=$prefix --enable-64bit
+	build
+}
+function berkeley(){
+	wget http://download.oracle.com/berkeley-db/db-6.2.32.tar.gz
+	prebuild db-6.2.32
+	mkdir build && cd build
+	../dist/configure --prefix=$prefix --enable-compat185 --enable-dbm --disable-static --enable-cxx
+	build
+}
+function mariadb(){
+	wget https://downloads.mariadb.org/interstitial/mariadb-10.2.13/source/mariadb-10.2.13.tar.gz
+	prebuild mariadb-10.2.13
+	mkdir build && cd build
+	cmake -DCMKE_INSTALL_PREFIX=$prefix -DCMAKE_BUILD_TYPE=Release ../
+	build
+}
+function java(){
+	 wget http://download.oracle.com/otn-pub/java/jdk/8u172-b11/a58eab1ec242421181065cdc37240b08/jdk-8u172-linux-x64.tar.gz?AuthParam=1525694966_c099448c7a6136565fa11bc8623f2439 -O jdk-8u172-linux-x64.tar.gz
+	prebuild jdk-8u172-linux-x64
+	cp -r jdk1.8.0_172 $prefix/java
+	echo "export JAVA_HOME=$prefix/java" >> $HOME/.bash_profile
+	echo "export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar" >> $HOME/.bash_profile
+	echo "export PATH=$PATH:$JAVA_HOME/bin" >>$HOME/.bash_profile
 }
 
