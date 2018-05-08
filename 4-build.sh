@@ -12,6 +12,9 @@ function build(){
 	echo $1," complete!"
 }
 function prebuild(){
+	if [ -d $1 ]; then
+		rm -rf $1
+	fi
 	tar -xvf $1.tar.*
 	if [ -d $1/build1 ]; then
 		echo "$1/build1"
@@ -83,7 +86,31 @@ function bzip2(){
 	prebuild bzip2-1.0.6
 	make -f Makefile-libbz2_so
 	make clean
-	make PREFIX=$prefix install
+	make PREFIX=$prefix CFLAGS=-fPIC install
+	cd $package
+}
+function pkgconfig(){
+	prebuild pkg-config-0.29.2
+	mkdir build && cd build
+	../configure --prefix=$prefix \
+		--with-internal-glib \
+		--disable-host-tool
+	build
+}
+function attr(){
+	prebuild attr-2.4.47.src
+	cd $package/attr-2.4.47
+	./configure --prefix=$prefix --disable-static
+	make
+    make install install-dev install-lib
+	cd $package
+}
+function acl(){
+	prebuild acl-2.2.52-src
+	cd $package/acl-2.2.52
+	./configure --prefix=$prefix --disable-static
+	make
+	make install install-dev install-lib
 	cd $package
 }
 function ncurses(){
@@ -97,7 +124,8 @@ function ncurses(){
 		--enable-pc-files
 	build ncurses-6.1
 }
-function sed(){
+
+function bsed(){
 	prebuild sed-4.4
 	mkdir build1 && cd build1
 	../configure --prefix=$prefix 
@@ -115,6 +143,11 @@ function flex(){
 	../configure --prefix=$prefix
 	build flex-2.6.4
 }
+function libcap(){
+	prebuild libcap-2.25
+	make PREFIX=$prefix install
+	build libcap
+}
 
 function grep(){
 	prebuild grep-3.1
@@ -130,10 +163,7 @@ function libtool(){
 }
 function gdbm(){
 	prebuild gdbm-1.14.1
-	mkdir build1 && cd build1
-	../configure --prefix=$prefix \
-		--disable-static \ 
-		--enable-lbgdbm-compat
+	./configure --prefix=$prefix --disable-static --enable-lbgdbm-compat
 	build gdbm-1.14.1
 }
 function expat(){
@@ -147,9 +177,11 @@ function perl(){
 	export BUILD_ZLIB=False
 	export BUILD_BZIP2=0
 	prebuild perl-5.26.1
-	mkdir build && build1
-	sh ../Configure -des -Dprefix=$prefix -Duseshrplib -Dusethreads 
+	./Configure -des -Dprefix=$prefix -Duseshrplib -Dusethreads 
 	make && make install
+	echo yes|cpan
+	cp ~/.cpan/CPAN/MyConfig.pm ~/.cpan/CPAN/MyConfig.pm.backup
+	less -S ~/.cpan/CPAN/MyConfig.pm.backup|sed 's/http\:\/\/www\.cpan\.org\//https\:\/\/mirrors\.aliyun\.com\/CPAN\//g'|less -S > ~/.cpan/CPAN/Myconfig.pm
 	unset BUILD_ZLIB BUILD_BZIP2
 	cpan XML::Parser-2.44
 }
@@ -187,6 +219,7 @@ function python(){
 	prebuild Python-3.6.4
 	./configure --prefix=$prefix --enable-shared --with-system-expat --with-system-ffi --with-ensurepip=yes 
 	build python-3.6.4
+	mkdir $HOME/.pip/;
 }
 function coreutils(){
 	prebuild coreutils-8.29
@@ -201,7 +234,7 @@ function diffutils(){
 	build diffutils-3.6
 }
 function findutils(){
-	prebuild find-4.6.0 
+	prebuild findutils-4.6.0 
 	mkdir build1 && cd build1
 	../configure --prefix=$prefix
 	build find-4.6.0 
@@ -213,7 +246,7 @@ function gawk(){
 	build gawk-4.2.0
 }
 
-function less(){
+function bless(){
 	prebuild less-530
 	mkdir build1 && cd build1
 	../configure --prefix=$prefix
@@ -257,7 +290,6 @@ function vim(){
 		--with-tlib=ncursesw
 	build vim-8.0.586
 }
-
 #zlib
 #readline
 #m4
@@ -265,15 +297,19 @@ function vim(){
 #binutils
 #gcc
 #bzip2
+#pkgconfig
 #ncurses
-#sed
+#attr
+#acl
+#libcap
+#bsed
 #bison
 #flex
 #grep
 #libtool
 #gdbm
 #expat
-perl
+#perl
 #autoconf
 #automake
 #xz
@@ -284,10 +320,10 @@ perl
 #diffutils
 #gawk
 #findutils
-#less
+#bless
 #gzip
 #libpipeline
-#make
+#bmake
 #btar
 #texinfo
 #vim

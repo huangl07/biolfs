@@ -1,14 +1,14 @@
 #!/usr/bin/env sh
-
 cat > ~/.bash_profile << "EOF"
 export prefix=$HOME/.env/
 export package=$HOME/package/
 export CFLAGS="-fPIC"
 export LD_LIBRARY_PATH=$prefix/lib/:$prefix/lib64/:/lib/:/lib64/:/usr/lib/:/usr/lib64/
 export LIBRARY_PATH=$prefix/lib/:$prefix/lib64/:/lib/:/lib64/:/usr/lib/:/usr/lib64/
-export C_INCLUDE_PATH=$prefix/include/:/include/:/usr/include/
-export CPLUS_INCLUDE_PATH=$prefix/include/:/include/:/usr/include/
+export C_INCLUDE_PATH=$prefix/include/
+export CPLUS_INCLUDE_PATH=$prefix/include/
 export PATH=$prefix/bin:/bin:/usr/bin
+export CXX=$prefix/bin/c++
 source ~/.bashrc
 EOF
 rm -rf ~/.bashrc && touch ~/.bashrc
@@ -26,6 +26,11 @@ purple='\e[01;35m'
 green='\e[01;32m'
 white='\e[01;37m'
 PS1="$red\u $yellow: $green\h $yellow: $blue\t $yellow: $purple\d $yellow: $cyan\w $white\n$\[\e[0m\]"
+EOF
+cat >$HOME/.pip/pip.conf << "EOF"
+[global]
+trusted-host=mirrors.aliyun.com
+index-url=https://mirrors.aliyun.com/pypi/simple
 EOF
 mkdir -p $HOME/tools
 mkdir -p $HOME/package

@@ -2,6 +2,7 @@
 export prefix=$HOME/tools/
 export package=$HOME/package/lfs-packages-8.2/
 export CFLAGS="-fPIC"
+export PATH=$prefix/bin/:$PATH
 function build(){
 	make -j8
 	make install
@@ -10,9 +11,14 @@ function build(){
 }
 function prebuild(){
 	tar -xvf $1.tar.*
-	if [ -d $1 ]; then 
-		cd $1
+	if [ -d $1/build1 ]; then
+		echo "$1/build1"
+		rm -rf $1/build1
 	fi
+	if [ -d $1/build ]; then
+		rm -rf $1/build
+	fi
+	cd $1
 	echo $1 done!
 }
 cd $package
@@ -37,6 +43,7 @@ function gcc(){
 	mkdir build && cd build
 	../configure --prefix=$prefix --disable-multilib --disable-bootsrap
 	build gcc-7.3.0
+	ln -s $prefix/bin/gcc $prefix/bin/cc
 }
 
 function tcl(){
@@ -44,15 +51,31 @@ function tcl(){
 	mkdir -p $package/tcl8.6.8/build && cd $package/tcl8.6.8/build
 	../unix/configure --prefix=$prefix
 	build tcl8.6.8
+	ln -s $prefix/bin/tclsh8.6 $prefix/bin/tclsh
 }
 function expact(){
 	prebuild expact-5.45.4
 	mkdir build && cd build
 	../configure --prefix=$prefix \
-	--with-tcl=/tools/lib \
-	--with-tclinclude=/tools/include
+	--with-tcl=$prefix/lib \
+	--with-tclinclude=$prefix/include
 	build expact-5.45.4
 }
+function dejagnu(){
+	prebuild dejagnu-1.6.1
+	mkdir build && cd build
+	../configure --prefix=$prefix \
+	build dejagnu-1.6.1
+}
+function bbash(){
+	prebuild bash-4.4.18
+	mkdir build && cd build
+	../configure --prefix=$prefix \
+		--without-bash-malloc
+	build bash-4.4.18
+}
+
+
 function ncurses(){
 	prebuild ncurses-6.1
 	mkdir build && cd build
@@ -137,8 +160,9 @@ function bmake(){
 }
 function perl(){
 	prebuild perl-5.26.1
-	sh Configure -des -Dprefix=$prefix -Dlibs=-lm
+	sh Configure -des -Dprefix=$prefix -Dlibs="-lm -pthread"
 	make && make install
+	cd $package
 }
 function sed(){
 	prebuild sed-4.4
@@ -164,13 +188,22 @@ function xz(){
 	../configure --prefix=$prefix
 	build xz-5.2.3
 }
+function patch(){
+	prebuild patch-2.7.6
+	mkdir build && cd build
+	../configure --prefix=$prefix
+	build patch-2.7.6
+}
+
 
 binutils
 gcc
 tcl
 expect
+dejagnu
 m4
 ncurses
+bbash
 bison
 bzip2
 coreutils
