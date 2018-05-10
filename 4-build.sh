@@ -77,10 +77,10 @@ function gcc(){
 	ln -sv gmp-6.1.2 gmp
 	tar -xf $package/mpc-1.1.0.tar.gz
 	ln -sv mpc-1.1.0 mpc
-	mkdir build1 && cd build1
-	../configure --prefix=$prefix --disable-multilib --disable-bootsrap --with-system-zlib
+	mkdir build && cd build
+	../configure --prefix=$prefix --disable-multilib --disable-bootsrap
 	build gcc-7.3.0
-	ln -sv $prefix/bin/gcc /$prefix/bin/cc
+	ln -s $prefix/bin/gcc $prefix/bin/cc
 }
 function bzip2(){
 	prebuild bzip2-1.0.6
@@ -106,7 +106,7 @@ function attr(){
 	cd $package
 }
 function acl(){
-	prebuild acl-2.2.52-src
+	prebuild acl-2.2.52.src
 	cd $package/acl-2.2.52
 	./configure --prefix=$prefix --disable-static
 	make
@@ -184,6 +184,7 @@ function perl(){
 	less -S ~/.cpan/CPAN/MyConfig.pm.backup|sed 's/http\:\/\/www\.cpan\.org\//https\:\/\/mirrors\.aliyun\.com\/CPAN\//g'|less -S > ~/.cpan/CPAN/Myconfig.pm
 	unset BUILD_ZLIB BUILD_BZIP2
 	cpan XML::Parser-2.44
+	cd $package
 }
 function autoconf(){
 	prebuild autoconf-2.69
@@ -219,13 +220,12 @@ function python(){
 	prebuild Python-3.6.4
 	./configure --prefix=$prefix --enable-shared --with-system-expat --with-system-ffi --with-ensurepip=yes 
 	build python-3.6.4
-	mkdir $HOME/.pip/;
 }
 function coreutils(){
 	prebuild coreutils-8.29
 	mkdir build1 && cd build1
 	../configure --prefix=$prefix --enable-no-install-program=kill,uptime
-	build
+	build coretiles
 }
 function diffutils(){
 	prebuild diffutils-3.6

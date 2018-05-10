@@ -10,6 +10,9 @@ function build(){
 	echo $1," complete!"
 }
 function prebuild(){
+	if [ -d $1 ]; then
+		rm -rf $1
+	fi
 	tar -xvf $1.tar.*
 	if [ -d $1/build1 ]; then
 		echo "$1/build1"
