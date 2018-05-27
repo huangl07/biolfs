@@ -332,6 +332,8 @@ function vim(){
 #gettext
 #libffi
 #python
+ninja
+meson
 #coreutils
 #diffutils
 #gawk
