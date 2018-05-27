@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+source ~/.bash_profile
 export prefix=$HOME/.env
 export package=$HOME/package/lfs-packages-8.2/
 export CFLAGS="-fPIC"
@@ -37,7 +38,7 @@ function readline(){
 	echo `pwd`
 	mkdir build1 && cd build1
 	../configure --prefix=$prefix --disable-static
-	make install
+	make SHLIB_LIBS="-l ncursesw" install
 	cd $package
 }
 function m4(){
@@ -221,6 +222,21 @@ function python(){
 	./configure --prefix=$prefix --enable-shared --with-system-expat --with-system-ffi --with-ensurepip=yes 
 	build python-3.6.4
 }
+function ninja(){
+	prebuild ninja-1.8.2
+	python3 configure.py --bootstrap
+	install -vm755 ninja $prefix/bin/
+	install -vDm644 misc/bash-completion $prefix/share/bash-completion/completions/ninja
+	install -vDm644 misc/zsh-completion $prefix/share/site-functions/_ninja
+	cd $package
+}
+function meson(){
+	prebuild meson-0.44.0
+	python3 setup.py build
+	python3 setup.py install
+	cd $package
+}
+
 function coreutils(){
 	prebuild coreutils-8.29
 	mkdir build1 && cd build1

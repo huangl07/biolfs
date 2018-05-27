@@ -27,6 +27,7 @@ green='\e[01;32m'
 white='\e[01;37m'
 PS1="$red\u $yellow: $green\h $yellow: $blue\t $yellow: $purple\d $yellow: $cyan\w $white\n$\[\e[0m\]"
 EOF
+mkdir $HOME/.pip/
 cat >$HOME/.pip/pip.conf << "EOF"
 [global]
 trusted-host=mirrors.aliyun.com

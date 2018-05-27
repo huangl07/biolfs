@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 export prefix=$HOME/.env
-export package=$HOME/package/lfs-packages-8.2/
+export package=$HOME/package/
 export CFLAGS="-fPIC"
 mkdir -p $prefix
 function build(){
@@ -10,6 +10,9 @@ function build(){
 	echo $1," complete!"
 }
 function prebuild(){
+	if [ -d $1 ]; then
+		rm -rf $1
+	fi
 	tar -xvf $1.tar.*
 	if [ -d $1 ]; then 
 		cd $1
@@ -25,18 +28,21 @@ function apr(){
 }
 function apr-util(){
 	wget https://archive.apache.org/dist/apr/apr-util-1.6.1.tar.bz2
-	prebuild apr-uril-1.6.1
-	./configure --prefix=$prefix --disable-static
+	prebuild apr-util-1.6.1
+	./configure --prefix=$prefix --with-apr=$prefix
 	build apr-1.6.3
 }
 function aspell(){
 	wget https://ftp.gnu.org/gnu/aspell/aspell-0.60.6.1.tar.gz
+	sed -i '/ top.do_check ==/s/top.do_check/*&/' modules/filter/tex.cpp
+	sed -i '/word ==/s/word/*&/' prog/check_funs.cpp
 	prebuild aspell-0.60.6.1
 	./configure --prefix=$prefix
 	build aspell-0.60.6.1
 }
 function boost(){
 	wget  https://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.tar.bz2
+	prebuild boost_1_66_0.tar.bz2
 	./bootstrap.sh --prefix=$prefix 
 	./b2 stage threading=multi link=shared
 	./b2 install threading=multi link=shared
@@ -60,10 +66,10 @@ function enhance(){
 	wget https://github.com/AbiWord/enchant/releases/download/v2.2.3/enchant-2.2.3.tar.gz
 	prebuild enchant-2.2.3
 	mkdir build && cd build
-	../configure --prefix=$prefix --disable=static
+	../configure --prefix=$prefix --disable-static
 	build
 }
-function exampi(){
+function exempi(){
 	wget https://libopenraw.freedesktop.org/download/exempi-2.4.4.tar.bz2
 	prebuild exempi-2.4.4
 	mkdir build && cd build
@@ -124,9 +130,10 @@ function gsl(){
 }
 function icu(){
 	wget http://download.icu-project.org/files/icu4c/60.2/icu4c-60_2-src.tgz
-	prebuild icu4c-60_2-src
+	tar -xvf icu4c-60_2-src.tgz
+	cd icu4c-60_2-src
 	mkdir build && cd build 
-	../configure --prefix=$prefix
+	../source/configure --prefix=$prefix
 	build
 }
 function js(){
@@ -382,8 +389,8 @@ function libusc-compat(){
 function libuv(){
 	wget https://github.com/libuv/libuv/archive/v1.19.1/libuv-1.19.1.tar.gz
 	prebuild libuv-1.19.1
-	mkdir build && cd build
-	../configure --prefix=$prefix --disable-static
+	sh autogen.sh
+	./configure --prefix=$prefix --disable-static
 	build
 }
 function libxkbcommon(){
@@ -723,6 +730,14 @@ function opencv(){
 	cmake -DCMAKE_INSTALL_PREFIX=$prefix
     build	
 }
+function bcurl(){
+	wget https://curl.haxx.se/download/curl-7.58.0.tar.xz
+	prebuild curl-7.58.0
+	mkdir build &&  cd build
+	../configure --prefix=$prefix --disable-static --enable-threaded-resolver
+    build	
+}
+
 function openjpeg(){
 	wget https://downloads.sourceforge.net/openjpeg.mirror/openjpeg-1.5.2.tar.gz
 	prebuild openjpeg-1.5.2
@@ -816,10 +831,10 @@ function tree(){
 	cd tree-1.7.0
 	make PREFIX=$prefix install
 }
-function cmake(){
+function bcmake(){
 	wget https://cmake.org/files/v3.10/cmake-3.10.2.tar.gz
 	prebuild cmake-3.10.2
-	./bootstrap --prefix=$prefix --system-libs
+	./bootstrap --prefix=$prefix --system-libs --no-system-jsoncpp  --no-system-librhash 
 	build
 }
 function Python2.7(){
@@ -850,12 +865,12 @@ function php(){
 		--with-readline              
 	build
 }
-function which(){
+function bwhich(){
 	wget https://ftp.gnu.org/gnu/which/which-2.21.tar.gz
 	prebuild which-2.21
 	mkdir build && cd build
 	../configure --prefix=$prefix
-	build
+	build which-2.21
 }
 function unrar(){
 	wget http://www.rarlab.com/rar/unrarsrc-5.5.8.tar.gz
